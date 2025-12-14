@@ -1,0 +1,39 @@
+trigger: none
+pool: default
+stages:
+  - stage: terraforminit
+    displayName: terraform inetialise
+    jobs:
+      - job: terreformInit
+        displayName: Terraform Init
+        steps:
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/lab'
+            backendServiceArm: 'azuretoado'
+            backendAzureRmResourceGroupName: 'arsh_rg'
+            backendAzureRmStorageAccountName: 'arshstrg1210'
+            backendAzureRmContainerName: 'lab'
+            backendAzureRmKey: 'terraform.tfstate'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/lab'
+            
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/lab'
+            environmentServiceNameAzureRM: 'azuretoado'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/lab'
+            environmentServiceNameAzureRM: 'azuretoado'
+          
+         
