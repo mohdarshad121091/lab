@@ -63,7 +63,7 @@ stages:
         - task: ManualValidation@1
           inputs:
             notifyUsers: 'mohdarshad1210@gmail.com'
-            approvers: 'self'
+            approvers: 'mohdarshad1210@gmail.com'
 
   - stage: terraformApply    
     displayName: terraform plan apply
