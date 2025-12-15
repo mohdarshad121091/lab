@@ -65,12 +65,12 @@ stages:
             notifyUsers: 'mohdarshad1210@gmail.com'
             approvers: 'self'
 
-  - stage: terraformPlanApply    
+  - stage: terraformApply    
     displayName: terraform plan apply
     dependsOn: terraformInit
     jobs : 
-      - job: terraformPlanApply
-        displayName: terraformPlanApply
+      - job: terraformApply
+        displayName: terraformApply
         steps:
         - task: TerraformTask@5
           inputs:
