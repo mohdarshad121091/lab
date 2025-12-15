@@ -2,7 +2,7 @@ trigger: none
 pool: selfhosted
 stages:
   - stage: terraformInit
-    displayName: terraform inetialise
+    displayName: terraform init
     jobs:
       - job: terreformInit
         displayName: Terraform Init
@@ -31,8 +31,8 @@ stages:
     displayName: terraform plan
     dependsOn: terraformInit
     jobs : 
-      - job: terraformPlan
-        displayName: terraformPlan
+      - job: terraformInit
+        displayName: terraform Init
         steps:
         - task: TerraformTask@5
           inputs:
@@ -52,7 +52,7 @@ stages:
             workingDirectory: '$(System.DefaultWorkingDirectory)'
             environmentServiceNameAzureRM: 'azuretoado'
           
-  - stage: 
+  - stage: ManualValidation 
     displayName: ManualValidation
     dependsOn: terraformPlan
     jobs : 
@@ -67,7 +67,7 @@ stages:
 
   - stage: terraformApply    
     displayName: terraform plan apply
-    dependsOn: terraformInit
+    dependsOn: ManualValidation 
     jobs : 
       - job: terraformApply
         displayName: Terraform Apply
@@ -83,12 +83,6 @@ stages:
             backendAzureRmContainerName: 'lab'
             backendAzureRmKey: 'terraform.tfstate'
                  
-        - task: TerraformTask@5
-          inputs:
-            provider: 'azurerm'
-            command: 'plan'
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
-            environmentServiceNameAzureRM: 'azuretoado'
         - task: TerraformTask@5
           inputs:
             provider: 'azurerm'
