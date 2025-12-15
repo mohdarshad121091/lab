@@ -1,0 +1,97 @@
+trigger: none
+pool: selfhosted
+stages:
+  - stage: terraformInit
+    displayName: terraform inetialise
+    jobs:
+      - job: terreformInit
+        displayName: Terraform Init
+        steps:
+        - task: TerraformInstaller@1
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            backendServiceArm: 'azuretoado'
+            backendAzureRmResourceGroupName: 'arsh_rg'
+            backendAzureRmStorageAccountName: 'arshstrg1210'
+            backendAzureRmContainerName: 'lab'
+            backendAzureRmKey: 'terraform.tfstate'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+  
+  - stage: terraformPlanApply    
+    displayName: terraform plan apply
+    dependsOn: terraformInit
+    jobs : 
+      - job: terraformPlan
+        displayName: terraformPlan
+        steps:
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            backendServiceArm: 'azuretoado'
+            backendAzureRmResourceGroupName: 'arsh_rg'
+            backendAzureRmStorageAccountName: 'arshstrg1210'
+            backendAzureRmContainerName: 'lab'
+            backendAzureRmKey: 'terraform.tfstate'
+                 
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            environmentServiceNameAzureRM: 'azuretoado'
+          
+  - stage: 
+    displayName: ManualValidation
+    dependsOn: terraformPlan
+    jobs : 
+      - job: ManualValidation
+        displayName: Approval needed
+        pool: server
+        steps:
+        - task: ManualValidation@1
+          inputs:
+            notifyUsers: 'mohdarshad1210@gmail.com'
+            approvers: 'self'
+
+  - stage: terraformPlanApply    
+    displayName: terraform plan apply
+    dependsOn: terraformInit
+    jobs : 
+      - job: terraformPlanApply
+        displayName: terraformPlanApply
+        steps:
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            backendServiceArm: 'azuretoado'
+            backendAzureRmResourceGroupName: 'arsh_rg'
+            backendAzureRmStorageAccountName: 'arshstrg1210'
+            backendAzureRmContainerName: 'lab'
+            backendAzureRmKey: 'terraform.tfstate'
+                 
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            environmentServiceNameAzureRM: 'azuretoado'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            environmentServiceNameAzureRM: 'azuretoado'
