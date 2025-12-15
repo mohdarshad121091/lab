@@ -14,7 +14,7 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/lab'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
             backendServiceArm: 'azuretoado'
             backendAzureRmResourceGroupName: 'arsh_rg'
             backendAzureRmStorageAccountName: 'arshstrg1210'
@@ -24,7 +24,7 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'validate'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/lab'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
   
   - stage: terraformPlanApply    
     displayName: terraform plan apply
@@ -54,7 +54,7 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'apply'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
             environmentServiceNameAzureRM: 'azuretoado'
           
          
