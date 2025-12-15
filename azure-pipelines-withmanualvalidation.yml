@@ -28,7 +28,7 @@ stages:
 
   
   - stage: terraformPlan  
-    displayName: terraform plan apply
+    displayName: terraform plan
     dependsOn: terraformInit
     jobs : 
       - job: terraformPlan
@@ -70,7 +70,7 @@ stages:
     dependsOn: terraformInit
     jobs : 
       - job: terraformApply
-        displayName: terraformApply
+        displayName: Terraform Apply
         steps:
         - task: TerraformTask@5
           inputs:
