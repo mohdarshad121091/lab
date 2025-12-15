@@ -1,5 +1,5 @@
 trigger: none
-pool: default
+pool: selfhosted
 stages:
   - stage: terraformInit
     displayName: terraform inetialise
