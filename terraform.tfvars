@@ -64,17 +64,17 @@ vms = {
 }
 }
 
-keyvault = {
+# keyvault = {
 
- key-dev1 = {
-    location                  = "Central India"
-    resource_group_name        = "fe-rg"
-    soft_delete_retention_days = 7
-    purge_protection_enabled   = false
-    sku_name                   = "standard"
-  }
+#  key-dev1 = {
+#     location                  = "Central India"
+#     resource_group_name        = "fe-rg"
+#     soft_delete_retention_days = 7
+#     purge_protection_enabled   = false
+#     sku_name                   = "standard"
+#   }
 
-}
+# }
 
 # keyvault_secrets = {
 #   admin_username = {
