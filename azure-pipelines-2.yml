@@ -1,5 +1,5 @@
 trigger: none
-pool: VMAGENT
+pool: Selfhosted
 stages:
   - stage: terraformInit
     displayName: Terraform Init Task
