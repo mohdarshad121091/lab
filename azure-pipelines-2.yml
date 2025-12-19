@@ -1,0 +1,52 @@
+trigger: none
+pool: VMAGENT
+stages:
+  - stage: terraformInit
+    displayName: Terraform Init Task
+    jobs: 
+      - job: terraformInit
+        displayName: Terraform Init Task
+        steps:
+        - task: TerraformInstaller@1
+          inputs:
+            terraformVersion: 'latest'
+        
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            backendServiceArm: 'azuretoado'
+            backendAzureRmStorageAccountName: 'arshstrg1210'
+            backendAzureRmContainerName: 'lab'
+            backendAzureRmKey: 'terraform.tfstate'
+      - job: terraformValidate
+        displayName: Terraform Validation Task
+        dependsOn: terraformInit
+        steps:
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+      - job: terraformPlan
+        displayName: Terraform Plan Task
+        dependsOn: terraformValidate
+        steps:
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            environmentServiceNameAzureRM: 'azuretoado'
+  - stage: securityScan
+    displayName: Scan using TFSEC
+    dependsOn: terraformInit
+    jobs:
+      - job: tfsecScan
+        displayName: Scan using TFSEC locally
+        steps:
+        - checkout: self
+
+        - powershell: |
+            tfsec --version
+            tfsec .
+         
+        
