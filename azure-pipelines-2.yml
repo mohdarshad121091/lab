@@ -34,13 +34,23 @@ stages:
     dependsOn: terraformInit
     jobs:
       - job: tfsecScan
-        displayName: Scan using TFSEC locally
+        displayName: Scan using TFSEC
         steps:
         - checkout: self
 
-        - powershell: |
-            C:\tools\tfsec\tfsec.exe --version
-            C:\tools\tfsec\tfsec.exe .
+        - task: PowerShell@2
+          displayName: Download & Run tfsec
+          inputs:
+            targetType: inline
+            script: |
+              Write-Host "Downloading tfsec..."
+              Invoke-WebRequest `
+                 -Uri https://github.com/aquasecurity/tfsec/releases/latest/download/tfsec-windows-amd64.exe `
+                 -OutFile tfsec.exe
+
+              .\tfsec.exe --version
+              .\tfsec.exe .
+
 
          
         
