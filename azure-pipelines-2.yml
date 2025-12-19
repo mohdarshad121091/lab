@@ -39,7 +39,8 @@ stages:
         - checkout: self
 
         - powershell: |
-            tfsec --version
-            tfsec .
+            C:\tools\tfsec\tfsec.exe --version
+            C:\tools\tfsec\tfsec.exe .
+
          
         
