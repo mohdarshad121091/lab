@@ -19,7 +19,6 @@ stages:
             backendAzureRmStorageAccountName: 'arshstrg1210'
             backendAzureRmContainerName: 'lab'
             backendAzureRmKey: 'terraform.tfstate'
-
         - task: TerraformTask@5
           inputs:
             provider: 'azurerm'
@@ -35,21 +34,14 @@ stages:
     jobs:
       - job: tfsecScan
         displayName: Scan using TFSEC
-        steps:
-        - checkout: self
-
+        steps: 
         - task: PowerShell@2
-          displayName: Download & Run tfsec
           inputs:
-            targetType: inline
-            script: |
-              Write-Host "Downloading tfsec..."
-              Invoke-WebRequest `
-                 -Uri https://github.com/aquasecurity/tfsec/releases/latest/download/tfsec-windows-amd64.exe `
-                 -OutFile tfsec.exe
+           targetType: 'inline'
+           script: 'tflint --chdir=$(System.DefaultWorkingDirectory) --recursive /format:tflint.jason'
 
-              .\tfsec.exe --version
-              .\tfsec.exe .
+        
+
 
 
          
