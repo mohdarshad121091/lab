@@ -54,6 +54,25 @@ stages:
             command: 'plan'
             workingDirectory: '$(System.DefaultWorkingDirectory)'
             environmentServiceNameAzureRM: 'azuretoado'
+            
+  - stage: codeScanning
+    displayName: Infra code scan
+    jobs:
+      - job: tflint
+        displayName: tflint scan
+        steps:
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: 'tflint --chdir=. --recursive --force'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+      - job: tfsec
+        displayName: tfsec security scan
+        steps:
+        - task: tfsec@1
+          inputs:
+            version: 'v1.26.0'
+            dir: '$(System.DefaultWorkingDirectory)'
           
   - stage: ManualValidation 
     displayName: ManualValidation
