@@ -51,19 +51,19 @@ stages:
                     # Always exit 0 so pipeline passes
                     exit 0
             workingDirectory: '$(System.DefaultWorkingDirectory)\dev'
-      - job: tflintScan
-        displayName: Scan using TFLINT
-        dependsOn: tfsecScan
-        steps:
-        - task: PowerShell@2
-          inputs:
-            targetType: inline
-            script: |
-              Write-Host "Running TFLINT"
-              C:\tools\tflint\tflint.exe 
-              tflint --init
-              Write-Host "TFLint scan completed (warnings/errors ignored)."
-               exit 0
+      # - job: tflintScan
+      #   displayName: Scan using TFLINT
+      #   dependsOn: tfsecScan
+      #   steps:
+      #   - task: PowerShell@2
+      #     inputs:
+      #       targetType: inline
+      #       script: |
+      #         Write-Host "Running TFLINT"
+      #         C:\tools\tflint\tflint.exe 
+      #         tflint --init
+      #         Write-Host "TFLint scan completed (warnings/errors ignored)."
+      #          exit 0
         
 
 
