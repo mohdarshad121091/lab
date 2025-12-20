@@ -39,3 +39,8 @@ stages:
           inputs:
             version: 'v1.26.0'
             dir: '$(System.DefaultWorkingDirectory)'
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: 'tflint --chdir=. --recursive'
+            workingDirectory: $(System.DefaultWorkingDirectory)
