@@ -1,0 +1,110 @@
+trigger: none
+pool: selfhosted
+stages:
+  - stage: terraformInit
+    displayName: terraform init
+    jobs:
+      - job: terreformInit
+        displayName: Terraform Init
+        steps:
+        - task: TerraformInstaller@1
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            backendServiceArm: 'azuretoado'
+            backendAzureRmResourceGroupName: 'arsh_rg'
+            backendAzureRmStorageAccountName: 'arshstrg1210'
+            backendAzureRmContainerName: 'lab'
+            backendAzureRmKey: 'terraform.tfstate'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+  
+  - stage: terraformPlan  
+    displayName: Terraform plan
+    dependsOn: terraformInit
+    jobs : 
+      - job: terraformInit
+        displayName: terraform Init
+        steps:
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            backendServiceArm: 'azuretoado'
+            backendAzureRmResourceGroupName: 'arsh_rg'
+            backendAzureRmStorageAccountName: 'arshstrg1210'
+            backendAzureRmContainerName: 'lab'
+            backendAzureRmKey: 'terraform.tfstate'
+                 
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            environmentServiceNameAzureRM: 'azuretoado'
+  - stage: 
+    displayName: Scan Task
+    dependsOn: terraformPlan
+    jobs:
+      - job: tfsecScan
+        displayName: Security Scan
+        steps:
+        - task: tfsec@1
+          inputs:
+            version: 'v1.26.0'
+            dir: '$(System.DefaultWorkingDirectory)'
+      - job: tflintScan
+        displayName: Infra scan
+        steps:
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: 'tflint --chdir=. --recursive --force'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+        
+  - stage: ManualValidation 
+    displayName: ManualValidation
+    dependsOn: terraformPlan
+    jobs : 
+      - job: ManualValidation
+        displayName: Approval needed
+        pool: server
+        steps:
+        - task: ManualValidation@1
+          inputs:
+            notifyUsers: 'mohdarshad1210@gmail.com'
+            approvers: 'mohdarshad1210@gmail.com'
+
+  - stage: terraformApply    
+    displayName: terraform plan apply
+    dependsOn: ManualValidation 
+    jobs : 
+      - job: terraformApply
+        displayName: Terraform Apply
+        steps:
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            backendServiceArm: 'azuretoado'
+            backendAzureRmResourceGroupName: 'arsh_rg'
+            backendAzureRmStorageAccountName: 'arshstrg1210'
+            backendAzureRmContainerName: 'lab'
+            backendAzureRmKey: 'terraform.tfstate'
+                 
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            environmentServiceNameAzureRM: 'azuretoado'
