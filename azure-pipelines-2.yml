@@ -44,3 +44,8 @@ stages:
             targetType: 'inline'
             script: 'tflint --chdir=. --recursive --force'
             workingDirectory: $(System.DefaultWorkingDirectory)
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: 'checkov -d .'
+            workingDirectory: $(System.DefaultWorkingDirectory)
