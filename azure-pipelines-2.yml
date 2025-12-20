@@ -47,5 +47,12 @@ stages:
         - task: PowerShell@2
           inputs:
             targetType: 'inline'
-            script: 'checkov -d .'
-            workingDirectory: $(System.DefaultWorkingDirectory)
+            script: |
+              python --version
+                    pip --version
+              
+                    pip install --upgrade pip
+                    pip install checkov
+              
+                    checkov -d .
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
