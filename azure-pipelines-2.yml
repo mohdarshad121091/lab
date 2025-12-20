@@ -50,7 +50,7 @@ stages:
               
                     # Always exit 0 so pipeline passes
                     exit 0
-            workingDirectory: '$(System.DefaultWorkingDirectory)\dev'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
       # - job: tflintScan
       #   displayName: Scan using TFLINT
       #   dependsOn: tfsecScan
