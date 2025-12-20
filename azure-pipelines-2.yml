@@ -51,6 +51,10 @@ stages:
                     # Always exit 0 so pipeline passes
                     exit 0
             workingDirectory: '$(System.DefaultWorkingDirectory)\dev'
+      - job: tflintScan
+        displayName: Scan using TFLINT
+        dependsOn: tfsecScan
+        steps:
         - task: PowerShell@2
           inputs:
             targetType: inline
